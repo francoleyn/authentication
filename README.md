@@ -1,29 +1,12 @@
 # Laravel Sanctum Authentication API
 
-A simple API authentication system using Laravel Sanctum with Docker.
+A REST API for user authentication using Laravel Sanctum with Laravel Sail (Docker).
 
 ## Requirements
 
 - Docker Desktop
 
 ## Quick Start
-
-### Option 1: Using Docker Compose (Recommended)
-
-```bash
-# Build and start containers
-docker-compose up -d --build
-
-# Run migrations
-docker-compose exec app php artisan migrate
-
-# Generate app key (if needed)
-docker-compose exec app php artisan key:generate
-```
-
-The API will be available at `http://localhost:8000`
-
-### Option 2: Using Laravel Sail
 
 ```bash
 # Start Docker containers
@@ -44,11 +27,11 @@ The API will be available at `http://localhost`
 | POST | `/api/auth/logout` | Logout user | Yes |
 | GET | `/api/auth/user` | Get current user | Yes |
 
-## Usage
+## Usage Examples
 
 ### Register
 
-```json
+```
 POST /api/auth/register
 Content-Type: application/json
 
@@ -62,7 +45,7 @@ Content-Type: application/json
 
 ### Login
 
-```json
+```
 POST /api/auth/login
 Content-Type: application/json
 
@@ -84,73 +67,13 @@ Content-Type: application/json
 
 ### Protected Routes
 
-Add the token to the `Authorization` header:
+Add the token to the Authorization header:
 
 ```
 Authorization: Bearer 1|abc123...
 ```
 
-### Get User
-
-```
-GET /api/auth/user
-Authorization: Bearer YOUR_TOKEN
-```
-
-### Logout
-
-```
-POST /api/auth/logout
-Authorization: Bearer YOUR_TOKEN
-```
-
-## Project Structure
-
-```
-authentication/
-├── app/
-│   ├── Http/Controllers/Api/
-│   │   └── AuthController.php    # Auth logic
-│   └── Models/
-│       └── User.php              # User model with HasApiTokens
-├── docker/
-│   └── nginx/
-│       └── default.conf          # Nginx configuration
-├── routes/
-│   └── api.php                   # API routes
-├── config/
-│   └── sanctum.php               # Sanctum config
-├── Dockerfile                    # PHP-FPM container
-├── docker-compose.yml            # Docker Compose config
-├── compose.yaml                  # Laravel Sail config
-└── .env                          # Environment variables
-```
-
-## Docker Commands
-
-### Docker Compose
-
-```bash
-# Start containers
-docker-compose up -d
-
-# Stop containers
-docker-compose down
-
-# Rebuild containers
-docker-compose up -d --build
-
-# Run artisan commands
-docker-compose exec app php artisan <command>
-
-# View logs
-docker-compose logs -f
-
-# Access MySQL
-docker-compose exec mysql mysql -u sail -ppassword authentication
-```
-
-### Laravel Sail
+## Sail Commands
 
 ```bash
 # Start containers
@@ -162,16 +85,40 @@ docker-compose exec mysql mysql -u sail -ppassword authentication
 # Run artisan commands
 ./vendor/bin/sail artisan <command>
 
+# Run composer
+./vendor/bin/sail composer <command>
+
 # Access MySQL
 ./vendor/bin/sail mysql
+
+# View logs
+./vendor/bin/sail logs
 ```
 
-## Environment
+## After Cloning
 
-Key `.env` settings for Docker:
+```bash
+# Copy environment file
+cp .env.example .env
 
-```env
-DB_HOST=mysql
-DB_USERNAME=sail
-DB_PASSWORD=password
+# Start Sail
+./vendor/bin/sail up -d
+
+# Install dependencies
+./vendor/bin/sail composer install
+
+# Generate app key
+./vendor/bin/sail artisan key:generate
+
+# Run migrations
+./vendor/bin/sail artisan migrate
 ```
+
+## Database Credentials
+
+| Setting | Value |
+|---------|-------|
+| Host | mysql |
+| Database | authentication |
+| Username | sail |
+| Password | password |
