@@ -70,6 +70,12 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    // One-to-Many: User has many Files
+    public function files(): HasMany
+    {
+        return $this->hasMany(File::class);
+    }
+
     // ==================== ACCESSORS ====================
 
     // Get posts count
@@ -82,5 +88,17 @@ class User extends Authenticatable
     public function getCommentsCountAttribute(): int
     {
         return $this->comments()->count();
+    }
+
+    // Get files count
+    public function getFilesCountAttribute(): int
+    {
+        return $this->files()->count();
+    }
+
+    // Get total storage used
+    public function getTotalStorageUsedAttribute(): int
+    {
+        return $this->files()->sum('size');
     }
 }

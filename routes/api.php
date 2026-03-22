@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProfileController;
@@ -26,6 +27,10 @@ Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/popular', [CategoryController::class, 'popular']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
+
+// Public file access (for public files)
+Route::get('/files/{file}/download', [FileController::class, 'download'])->name('api.files.download');
+Route::get('/files/{file}/stream', [FileController::class, 'stream'])->name('api.files.stream');
 
 Route::middleware('auth:sanctum')->group(function () {
     // User management
@@ -80,5 +85,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/categories', [CategoryController::class, 'store']);
         Route::put('/categories/{category}', [CategoryController::class, 'update']);
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+    });
+
+    // File Management
+    Route::prefix('files')->group(function () {
+        Route::get('/', [FileController::class, 'index']);
+        Route::get('/stats', [FileController::class, 'myFiles']);
+        Route::post('/upload', [FileController::class, 'store']);
+        Route::post('/upload-multiple', [FileController::class, 'storeMultiple']);
+        Route::get('/{file}', [FileController::class, 'show']);
+        Route::put('/{file}', [FileController::class, 'update']);
+        Route::delete('/{file}', [FileController::class, 'destroy']);
+        Route::post('/delete-multiple', [FileController::class, 'destroyMultiple']);
     });
 });
