@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -26,6 +27,9 @@ class AuthController extends Controller
         ]);
 
         $user->assignRole('user');
+
+        // Send welcome notification
+        $user->notify(new WelcomeNotification());
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

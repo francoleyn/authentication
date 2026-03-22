@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -24,4 +25,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('/permissions', [RoleController::class, 'permissions'])->middleware('role:admin');
+
+    // Notification routes
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/unread', [NotificationController::class, 'unread']);
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+        
+        // Admin only - send notifications
+        Route::post('/send', [NotificationController::class, 'send'])->middleware('role:admin');
+        Route::post('/send-all', [NotificationController::class, 'sendToAll'])->middleware('role:admin');
+    });
 });
